@@ -1,10 +1,18 @@
 package com.poscodx.mysite.controller;
 
 import java.io.IOException;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import com.poscodx.mysite.dao.UserDao;
+import com.poscodx.web.mvc.Action;
+import com.poscodx.web.mvc.user.JoinAction;
+import com.poscodx.web.mvc.user.JoinFormAction;
+import com.poscodx.web.mvc.user.JoinSuccessAction;
+import com.poscodx.web.mvc.user.UserActionFactory;
 
 public class UserController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -13,13 +21,9 @@ public class UserController extends HttpServlet {
 			throws ServletException, IOException {
 		request.setCharacterEncoding("UTF-8");
 
-		String action = request.getParameter("a");
-		
-		if("joinform".equals(action)) {
-			request
-				.getRequestDispatcher("/WEB-INF/views/user/joinform.jsp")
-				.forward(request, response);
-		}
+		String actionName = request.getParameter("a");
+		Action action = new UserActionFactory().getAction(actionName);
+		action.execute(request,response);
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
