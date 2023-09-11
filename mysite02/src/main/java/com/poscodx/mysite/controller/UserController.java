@@ -8,18 +8,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.poscodx.mysite.dao.UserDao;
+import com.poscodx.mysite.web.mvc.user.JoinAction;
+import com.poscodx.mysite.web.mvc.user.JoinFormAction;
+import com.poscodx.mysite.web.mvc.user.JoinSuccessAction;
+import com.poscodx.mysite.web.mvc.user.UserActionFactory;
 import com.poscodx.web.mvc.Action;
-import com.poscodx.web.mvc.user.JoinAction;
-import com.poscodx.web.mvc.user.JoinFormAction;
-import com.poscodx.web.mvc.user.JoinSuccessAction;
-import com.poscodx.web.mvc.user.UserActionFactory;
 
 public class UserController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		request.setCharacterEncoding("UTF-8");
 
 		String actionName = request.getParameter("a");
 		Action action = new UserActionFactory().getAction(actionName);

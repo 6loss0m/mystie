@@ -68,12 +68,18 @@ public class UserDao {
 		UserVo userVo = null;
 		try {
 			conn = getConnection();
+			if (password.equals("") || password == null) {
+				String sql = "select no, name from user where email = ?";
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setString(1, email);
 
-			String sql = "select no, name from user where email = ? and password = password(?)";
-			pstmt = conn.prepareStatement(sql);
+			} else {
+				String sql = "select no, name from user where email = ? and password = password(?)";
+				pstmt = conn.prepareStatement(sql);
 
-			pstmt.setString(1, email);
-			pstmt.setString(2, password);
+				pstmt.setString(1, email);
+				pstmt.setString(2, password);
+			}
 
 			rs = pstmt.executeQuery();
 

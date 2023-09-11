@@ -18,9 +18,8 @@ public class GeustbookController extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
-		request.setCharacterEncoding("UTF-8");
 		String action = request.getParameter("a"); // action 제어
-
+		
 		if ("insert".equals(action)) {
 			String name = request.getParameter("name");
 			String password = request.getParameter("pass");

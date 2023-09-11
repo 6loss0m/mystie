@@ -1,18 +1,17 @@
-package com.poscodx.web.mvc.user;
+package com.poscodx.mysite.web.mvc.user;
 
 import java.io.IOException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import com.poscodx.mysite.dao.UserDao;
 import com.poscodx.mysite.vo.UserVo;
 import com.poscodx.web.mvc.Action;
 import com.poscodx.web.utils.WebUtil;
 
-public class UpdateAction implements Action {
+public class JoinAction implements Action {
 
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
@@ -20,8 +19,6 @@ public class UpdateAction implements Action {
 		String email = request.getParameter("email");
 		String password = request.getParameter("password");
 		String gender = request.getParameter("gender");
-
-		System.out.println(password);
 		
 		UserVo userVo = new UserVo();
 		userVo.setName(name);
@@ -29,17 +26,8 @@ public class UpdateAction implements Action {
 		userVo.setPassword(password);
 		userVo.setGender(gender);
 		
-		if(new UserDao().update(userVo)) {
-			UserVo updateVo = new UserDao().findByEmailAndPassword(email, password);
-			
-			/* 로그인 처리 */
-			HttpSession session = request.getSession();
-			session.setAttribute("authUser", updateVo);
-			
-			// redirect
-		}
-		
-		WebUtil.forward("user/updateform", request, response);
+		new UserDao().insert(userVo);
+	
+		response.sendRedirect(request.getContextPath() + "/user?a=joinsuccess");
 	}
-
 }

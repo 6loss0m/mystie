@@ -1,4 +1,4 @@
-package com.poscodx.web.mvc.main;
+package com.poscodx.mysite.web.mvc.main;
 
 import com.poscodx.web.mvc.Action;
 import com.poscodx.web.mvc.ActionFactory;

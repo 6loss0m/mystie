@@ -7,15 +7,20 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.poscodx.mysite.web.mvc.main.MainActionFactory;
 import com.poscodx.web.mvc.Action;
-import com.poscodx.web.mvc.main.MainActionFactory;
 
 public class MainController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	
+	@Override
+	public void init() throws ServletException {
+		String configPath = this.getServletConfig().getInitParameter("config");
+		System.out.println(configPath);
+		super.init();	// 지우면 service가 안될 수 있음.
+	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		request.setCharacterEncoding("UTF-8");
-
 		String actionName = request.getParameter("a");
 		Action action = new MainActionFactory().getAction(actionName);
 		action.execute(request,response);

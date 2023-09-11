@@ -1,4 +1,4 @@
-package com.poscodx.web.mvc.user;
+package com.poscodx.mysite.web.mvc.user;
 
 import java.io.IOException;
 

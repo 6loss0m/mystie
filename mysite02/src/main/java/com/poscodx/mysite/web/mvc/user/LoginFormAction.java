@@ -1,4 +1,4 @@
-package com.poscodx.web.mvc.guestbook;
+package com.poscodx.mysite.web.mvc.user;
 
 import java.io.IOException;
 
@@ -7,13 +7,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.poscodx.web.mvc.Action;
+import com.poscodx.web.utils.WebUtil;
 
-public class InsertAction implements Action {
+public class LoginFormAction implements Action {
 
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-		// TODO Auto-generated method stub
-
+		WebUtil.forward("/user/loginform", request, response);
 	}
 
 }
