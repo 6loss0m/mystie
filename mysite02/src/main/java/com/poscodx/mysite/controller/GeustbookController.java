@@ -10,7 +10,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.poscodx.mysite.dao.GuestBookDao;
+import com.poscodx.mysite.dao.UserDao;
 import com.poscodx.mysite.vo.GuestBookVo;
+import com.poscodx.mysite.vo.UserVo;
 
 public class GeustbookController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -19,7 +21,6 @@ public class GeustbookController extends HttpServlet {
 			throws ServletException, IOException {
 
 		String action = request.getParameter("a"); // action 제어
-		
 		if ("insert".equals(action)) {
 			String name = request.getParameter("name");
 			String password = request.getParameter("pass");
@@ -42,16 +43,18 @@ public class GeustbookController extends HttpServlet {
 
 			RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/guestbook/deleteform.jsp");
 			rd.forward(request, response);
-			
+
 		} else if ("delete".equals(action)) {
 
 			Long no = Long.parseLong(request.getParameter("no"));
 			String password = request.getParameter("password");
 
+			System.out.println("[delete action] no : " + no + ", password : " + password);
+
 			new GuestBookDao().deleteByNo(no, password);
 
 			response.sendRedirect("/mysite02/guestbook");
-			
+
 		} else {
 			List<GuestBookVo> list = new GuestBookDao().findAll();
 

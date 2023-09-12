@@ -68,6 +68,63 @@ public class GuestBookDao {
 		return result;
 	}
 
+	public GuestBookVo findByNo(Long no) {
+		GuestBookVo result = null;
+
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+
+		try {
+			conn = getConnection();
+
+			// 3. SQL 준비
+			String sql = "select name, password, contents, reg_date from guestbook where no = ?";
+			pstmt = conn.prepareStatement(sql);
+
+			// 4. binding
+
+			// 5. SQL 실행
+			rs = pstmt.executeQuery();
+
+			// 6. 결과 처리
+			if (rs.next()) {
+				String name = rs.getString(1);
+				String password = rs.getString(2);
+				String contents = rs.getString(3);
+				String regDate = rs.getString(4);
+
+				GuestBookVo vo = new GuestBookVo();
+				vo.setNo(no);
+				vo.setName(name);
+				vo.setPassword(password);
+				vo.setContents(contents);
+				vo.setRegDate(regDate);
+
+				result = vo;
+			}
+
+		} catch (SQLException e) {
+			System.out.println("error:" + e);
+		} finally {
+			try {
+				// 7. 자원정리
+				if (rs != null) {
+					rs.close();
+				}
+				if (pstmt != null) {
+					pstmt.close();
+				}
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return result;
+	}
+
 	public void insert(GuestBookVo vo) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;

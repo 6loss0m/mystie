@@ -68,18 +68,11 @@ public class UserDao {
 		UserVo userVo = null;
 		try {
 			conn = getConnection();
-			if (password.equals("") || password == null) {
-				String sql = "select no, name from user where email = ?";
-				pstmt = conn.prepareStatement(sql);
-				pstmt.setString(1, email);
+			String sql = "select no, name from user where email = ? and password = password(?)";
+			pstmt = conn.prepareStatement(sql);
 
-			} else {
-				String sql = "select no, name from user where email = ? and password = password(?)";
-				pstmt = conn.prepareStatement(sql);
-
-				pstmt.setString(1, email);
-				pstmt.setString(2, password);
-			}
+			pstmt.setString(1, email);
+			pstmt.setString(2, password);
 
 			rs = pstmt.executeQuery();
 
@@ -114,96 +107,88 @@ public class UserDao {
 	}
 
 	public UserVo findByNo(Long no) {
+		UserVo vo = null;
+		
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		UserVo userVo = null;
+				
 		try {
 			conn = getConnection();
-
-			String sql = "select email, gender from user where no = ?";
+			
+			String sql = "select no, name, email, gender from user where no=?";
 			pstmt = conn.prepareStatement(sql);
-
+			
 			pstmt.setLong(1, no);
 
 			rs = pstmt.executeQuery();
-
-			if (rs.next()) {
-				String email = rs.getString(1);
-				String gender = rs.getString(2);
-
-				userVo = new UserVo();
-				userVo.setEmail(email);
-				userVo.setGender(gender);
+			
+			if(rs.next()) {
+				vo = new UserVo();
+				
+				vo.setNo(rs.getLong(1));
+				vo.setName(rs.getString(2));
+				vo.setEmail(rs.getString(3));
+				vo.setGender(rs.getString(4));
 			}
-
-			// 5. 결과 처리
 		} catch (SQLException e) {
 			System.out.println("error:" + e);
 		} finally {
 			try {
-				if (rs != null) {
+				if(rs != null) {
 					rs.close();
 				}
-				if (pstmt != null) {
+				if(pstmt != null) {
 					pstmt.close();
 				}
-				if (conn != null) {
+				if(conn != null) {
 					conn.close();
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
 		}
-		return userVo;
+		
+		return vo;
 	}
 
-	public boolean update(UserVo userVo) {
-		boolean result = false;
+	public void update(UserVo vo) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
-		ResultSet rs = null;
 		try {
 			conn = getConnection();
-			if (userVo.getPassword().equals("") || userVo.getPassword() == null) {
-				String sql = "update user set name = ?, gender = ? where email = ?";
+			
+			if("".equals(vo.getPassword())) {
+				String sql = "update user set name=?, gender=? where no=?";
 				pstmt = conn.prepareStatement(sql);
-
-				pstmt.setString(1, userVo.getName());
-				pstmt.setString(2, userVo.getGender());
-				pstmt.setString(3, userVo.getEmail());
+				
+				pstmt.setString(1, vo.getName());
+				pstmt.setString(2, vo.getGender());
+				pstmt.setLong(3, vo.getNo());
 			} else {
-				String sql = "update user set name = ?, password = password(?), gender = ? where email = ?";
+				String sql = "update user set name=?, gender=?, password=password(?) where no=?";
 				pstmt = conn.prepareStatement(sql);
-
-				pstmt.setString(1, userVo.getName());
-				pstmt.setString(2, userVo.getPassword());
-				pstmt.setString(3, userVo.getGender());
-				pstmt.setString(4, userVo.getEmail());
+				
+				pstmt.setString(1, vo.getName());
+				pstmt.setString(2, vo.getGender());
+				pstmt.setString(3, vo.getPassword());
+				pstmt.setLong(4, vo.getNo());
 			}
-
-			int count = pstmt.executeUpdate();
-
-			result = count == 1;
-			// 5. 결과 처리
-//			result = count == 1;
+			
+			pstmt.executeUpdate();
 		} catch (SQLException e) {
 			System.out.println("error:" + e);
 		} finally {
 			try {
-				if (rs != null) {
-					rs.close();
-				}
-				if (pstmt != null) {
+				if(pstmt != null) {
 					pstmt.close();
 				}
-				if (conn != null) {
+				if(conn != null) {
 					conn.close();
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
-		}
-		return result;
+		}		
 	}
 }

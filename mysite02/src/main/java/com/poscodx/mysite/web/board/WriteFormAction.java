@@ -1,4 +1,4 @@
-package com.poscodx.mysite.web.mvc.user;
+package com.poscodx.mysite.web.board;
 
 import java.io.IOException;
 
@@ -12,12 +12,11 @@ import com.poscodx.mysite.vo.UserVo;
 import com.poscodx.web.mvc.Action;
 import com.poscodx.web.utils.WebUtil;
 
-public class UpdateformAction implements Action {
+public class WriteFormAction implements Action {
 
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		// Access Control(접근제어)
-		///// 횡단 관심 /////////////////////////////////////////////////////// Filter 사용하면 좋음.
 		HttpSession session = request.getSession();
 		UserVo authUser = (UserVo) session.getAttribute("authUser");
 
@@ -26,11 +25,11 @@ public class UpdateformAction implements Action {
 			return;
 		}
 		/////////////////////////////////////////////////////////////////////
-		Long no = authUser.getNo();
-		UserVo userVo = new UserDao().findByNo(no);
+		Long no = (Long) request.getAttribute("no");
 		
-		request.setAttribute("userVo", userVo);
-		WebUtil.forward("user/updateform", request, response);
+		request.setAttribute("no", no);
+		
+		WebUtil.forward("board/write", request, response);
 	}
 
 }
