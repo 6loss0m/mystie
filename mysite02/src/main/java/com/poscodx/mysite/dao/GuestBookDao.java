@@ -20,7 +20,7 @@ public class GuestBookDao {
 		ResultSet rs = null;
 
 		try {
-			conn = getConnection();
+			conn = DBConnection.getConnection();
 
 			// 3. SQL 준비
 			String sql = "select no, name, contents, reg_date from guestbook order by no";
@@ -76,7 +76,7 @@ public class GuestBookDao {
 		ResultSet rs = null;
 
 		try {
-			conn = getConnection();
+			conn = DBConnection.getConnection();
 
 			// 3. SQL 준비
 			String sql = "select name, password, contents, reg_date from guestbook where no = ?";
@@ -130,7 +130,7 @@ public class GuestBookDao {
 		PreparedStatement pstmt = null;
 
 		try {
-			conn = getConnection();
+			conn = DBConnection.getConnection();
 
 			String sql = "insert into guestbook values(null, ?, password(?), ?, now())";
 			pstmt = conn.prepareStatement(sql);
@@ -161,7 +161,7 @@ public class GuestBookDao {
 		PreparedStatement pstmt = null;
 
 		try {
-			conn = getConnection();
+			conn = DBConnection.getConnection();
 
 			String sql = "delete from guestbook where no=? and password = password(?)";
 			pstmt = conn.prepareStatement(sql);
@@ -185,17 +185,4 @@ public class GuestBookDao {
 		}
 	}
 
-	private Connection getConnection() throws SQLException {
-		Connection conn = null;
-
-		try {
-			Class.forName("org.mariadb.jdbc.Driver");
-			String url = "jdbc:mariadb://192.168.0.179:3307/webdb?charset=utf8";
-			conn = DriverManager.getConnection(url, "webdb", "webdb");
-		} catch (ClassNotFoundException e) {
-			System.out.println("드라이버 로딩 실패:" + e);
-		}
-
-		return conn;
-	}
 }

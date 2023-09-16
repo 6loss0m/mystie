@@ -16,7 +16,7 @@ public class UserDao {
 		PreparedStatement pstmt = null;
 
 		try {
-			conn = getConnection();
+			conn = DBConnection.getConnection();
 
 			String sql = "insert into user values(null, ?, ?, password(?), ?, current_date())";
 			pstmt = conn.prepareStatement(sql);
@@ -47,27 +47,13 @@ public class UserDao {
 		return result;
 	}
 
-	private Connection getConnection() throws SQLException {
-		Connection conn = null;
-
-		try {
-			Class.forName("org.mariadb.jdbc.Driver");
-			String url = "jdbc:mariadb://192.168.0.179:3307/webdb?charset=utf8";
-			conn = DriverManager.getConnection(url, "webdb", "webdb");
-		} catch (ClassNotFoundException e) {
-			System.out.println("드라이버 로딩 실패:" + e);
-		}
-
-		return conn;
-	}
-
 	public UserVo findByEmailAndPassword(String email, String password) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		UserVo userVo = null;
 		try {
-			conn = getConnection();
+			conn = DBConnection.getConnection();
 			String sql = "select no, name from user where email = ? and password = password(?)";
 			pstmt = conn.prepareStatement(sql);
 
@@ -114,7 +100,7 @@ public class UserDao {
 		ResultSet rs = null;
 				
 		try {
-			conn = getConnection();
+			conn = DBConnection.getConnection();
 			
 			String sql = "select no, name, email, gender from user where no=?";
 			pstmt = conn.prepareStatement(sql);
@@ -156,7 +142,7 @@ public class UserDao {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		try {
-			conn = getConnection();
+			conn = DBConnection.getConnection();
 			
 			if("".equals(vo.getPassword())) {
 				String sql = "update user set name=?, gender=? where no=?";
