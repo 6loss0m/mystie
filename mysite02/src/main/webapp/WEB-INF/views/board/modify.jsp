@@ -18,7 +18,7 @@
 			<div id="board">
 				<form class="board-form" method="post" action="${pageContext.request.contextPath }/board">
 					<input type="hidden" name="a" value="modify">
-					<input type = "text" name = "n" value="${vo.no }">
+					<input type = "hidden" name = "n" value="${vo.no }">
 					<input type = "hidden" name = "p" value="${curPage }">
 					<table class="tbl-ex">
 						<tr>

@@ -33,7 +33,6 @@ public class ModifyFormAction implements Action {
 		int curPage = Integer.parseInt(request.getParameter("p"));
 
 		BoardVo boardVo = new BoardDao().findByNo(no);
-		boardVo.setNo(no);
 		
 		request.setAttribute("vo", boardVo);
 		request.setAttribute("curPage", curPage);

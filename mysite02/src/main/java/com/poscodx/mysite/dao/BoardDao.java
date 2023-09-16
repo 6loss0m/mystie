@@ -21,7 +21,7 @@ public class BoardDao {
 		ResultSet rs = null;
 
 		try {
-			conn = getConnection();
+			conn = DBConnection.getConnection();
 
 			String sql = "select no, title, contents, hit, reg_date, g_no, o_no, depth, user_no " + "from board "
 					+ "where title like ? " + "order by g_no desc, o_no asc " + "limit ?, 5";
@@ -91,7 +91,7 @@ public class BoardDao {
 		ResultSet rs = null;
 
 		try {
-			conn = getConnection();
+			conn = DBConnection.getConnection();
 
 			// 3. SQL 준비
 			String sql = "select b.no, b.title, b.contents, b.hit, b.reg_date, b.g_no, b.o_no, b.depth, b.user_no, u.name"
@@ -162,7 +162,7 @@ public class BoardDao {
 		ResultSet rs = null;
 
 		try {
-			conn = getConnection();
+			conn = DBConnection.getConnection();
 
 			String sql = "select title, contents, g_no, o_no, depth, user_no from board where no=?";
 			pstmt = conn.prepareStatement(sql);
@@ -174,7 +174,7 @@ public class BoardDao {
 			if (rs.next()) {
 				vo = new BoardVo();
 
-				vo.setgNo(no);
+				vo.setNo(no);
 				vo.setTitle(rs.getString(1));
 				vo.setContents(rs.getString(2));
 				vo.setgNo(rs.getLong(3));
@@ -209,7 +209,7 @@ public class BoardDao {
 		ResultSet rs = null;
 
 		try {
-			conn = getConnection();
+			conn = DBConnection.getConnection();
 
 			String sql = "insert into board(user_no, title, contents, reg_date, g_no, o_no, depth, hit) "
 					+ "values(?, ?, ?, now(), ?, ?, ?, 1)";
@@ -249,7 +249,7 @@ public class BoardDao {
 		PreparedStatement pstmt = null;
 
 		try {
-			conn = getConnection();
+			conn = DBConnection.getConnection();
 			String sql = "insert into board values(null, ?, ?, 0, now(), ?, 1, 1, ?)";
 
 			pstmt = conn.prepareStatement(sql);
@@ -284,7 +284,7 @@ public class BoardDao {
 		try {
 			updateNo(vo.getgNo(), vo.getoNo());
 
-			conn = getConnection();
+			conn = DBConnection.getConnection();
 			String sql = "insert into board values(null, ?, ?, 0, now(), ?, ?, ?, ?)";
 
 			pstmt = conn.prepareStatement(sql);
@@ -319,7 +319,7 @@ public class BoardDao {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		try {
-			conn = getConnection();
+			conn = DBConnection.getConnection();
 
 			String sql = "update board set o_no = o_no + 1 where g_no = ? and o_no >= ?";
 
@@ -351,7 +351,7 @@ public class BoardDao {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		try {
-			conn = getConnection();
+			conn = DBConnection.getConnection();
 
 			String sql = "update board set title = ?, contents = ? where no = ?";
 			pstmt = conn.prepareStatement(sql);
@@ -383,7 +383,7 @@ public class BoardDao {
 		PreparedStatement pstmt = null;
 
 		try {
-			conn = getConnection();
+			conn = DBConnection.getConnection();
 
 			String sql = "delete from board where no = ?";
 			pstmt = conn.prepareStatement(sql);
@@ -406,25 +406,13 @@ public class BoardDao {
 		}
 	}
 
-	private Connection getConnection() throws SQLException {
-		Connection conn = null;
-
-		try {
-			Class.forName("org.mariadb.jdbc.Driver");
-			String url = "jdbc:mariadb://192.168.0.179:3307/webdb?charset=utf8";
-			conn = DriverManager.getConnection(url, "webdb", "webdb");
-		} catch (ClassNotFoundException e) {
-			System.out.println("드라이버 로딩 실패:" + e);
-		}
-
-		return conn;
-	}
+	
 
 	public void upHit(Long no) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		try {
-			conn = getConnection();
+			conn = DBConnection.getConnection();
 
 			String sql = "update board set hit = hit+1 where no=?";
 			pstmt = conn.prepareStatement(sql);
@@ -456,7 +444,7 @@ public class BoardDao {
 		ResultSet rs = null;
 
 		try {
-			conn = getConnection();
+			conn = DBConnection.getConnection();
 
 			String sql = "select count(*) from board";
 			pstmt = conn.prepareStatement(sql);
@@ -495,7 +483,7 @@ public class BoardDao {
 		ResultSet rs = null;
 
 		try {
-			conn = getConnection();
+			conn = DBConnection.getConnection();
 
 			String sql = "select max(g_no) from board";
 			pstmt = conn.prepareStatement(sql);

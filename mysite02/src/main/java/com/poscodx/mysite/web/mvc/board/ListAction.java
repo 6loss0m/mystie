@@ -17,7 +17,6 @@ public class ListAction implements Action {
 
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-
 		/* Searching */
 		String search = "";
 		if (request.getParameter("k") != null) {
@@ -32,13 +31,17 @@ public class ListAction implements Action {
 			totalPage++;
 		}
 
-		int curPage = Integer.parseInt(request.getParameter("p"));
+		int curPage = 1;
+		if (request.getParameter("p") != null) {
+			curPage = Integer.parseInt(request.getParameter("p"));
+		}
 		int startPage = (curPage - 1) / pageSize * pageSize + 1;
 		int endPage = startPage + pageSize - 1;
 		if (endPage > totalPage) {
 			endPage = totalPage;
 		}
 
+		System.out.println(curPage + " : " + search);
 		/* List Making by Page No */
 		List<BoardVo> list = new BoardDao().findAll((curPage - 1) * 5, search);
 		request.setAttribute("list", list);

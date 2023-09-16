@@ -24,11 +24,8 @@ public class ViewAction implements Action {
 		int curPage = Integer.parseInt(request.getParameter("p"));
 
 		BoardVo boardVo = new BoardDao().findByNo(no);
-		boardVo.setNo(no);
 		new BoardDao().upHit(no);
 
-		System.out.println(boardVo);
-		
 		request.setAttribute("vo", boardVo);
 		request.setAttribute("curPage", curPage);
 		WebUtil.forward("board/view", request, response);

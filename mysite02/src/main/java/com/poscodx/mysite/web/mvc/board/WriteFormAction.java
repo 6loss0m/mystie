@@ -32,7 +32,6 @@ public class WriteFormAction implements Action {
 		else {
 			Long no = Long.parseLong(request.getParameter("n"));
 			int curPage = Integer.parseInt(request.getParameter("p"));
-			System.out.println(no+" : "+curPage);
 			
 			request
 				.getRequestDispatcher("/WEB-INF/views/board/write.jsp?n=" + no + "&p=" + curPage)
