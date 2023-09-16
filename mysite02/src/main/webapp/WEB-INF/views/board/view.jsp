@@ -2,13 +2,12 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
-<!DOCTYPE html>
+	pageEncoding="UTF-8"%><!DOCTYPE html>
 <html>
 <head>
 <title>mysite</title>
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
-<link href="${pageContext.request.contextPath }/assets/css/board.css"
+<link href="${pageContext.request.contextPath}/assets/css/board.css"
 	rel="stylesheet" type="text/css">
 </head>
 <body>
@@ -27,17 +26,16 @@
 					<tr>
 						<td class="label">내용</td>
 						<td>
-							<div class="view-content">${fn:replace(vo.contents, newline, "<br>")}
-							</div>
+							<div class="view-content">${vo.contents }</div>
 						</td>
 					</tr>
 				</table>
 				<div class="bottom">
-					<a href="${pageContext.request.contextPath }/board?a=list">글목록</a>
-					<a href="${pageContext.request.contextPath }/board?a=writeform&no=${param.no }">댓글 달기</a>
-					<c:if test='${vo.userNo == user_no }'>
-							<a href="${pageContext.request.contextPath }/board?a=modifyform&no=${param.no }">글수정</a>
+					<a href="${pageContext.request.contextPath}/board?p=${curPage}">글목록</a>
+					<c:if test="${authUser.no == vo.userNo }">
+					<a href="${pageContext.request.contextPath}/board?a=modifyform&n=${vo.no }&p=${curPage }">수정</a>
 					</c:if>
+					<a href="${pageContext.request.contextPath}/board?a=writeform&n=${vo.no }&p=${curPage }">답글</a>
 				</div>
 			</div>
 		</div>

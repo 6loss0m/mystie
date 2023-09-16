@@ -1,7 +1,6 @@
-package com.poscodx.mysite.web.board;
+package com.poscodx.mysite.web.mvc.board;
 
 import java.io.IOException;
-import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -14,32 +13,25 @@ import com.poscodx.mysite.vo.UserVo;
 import com.poscodx.web.mvc.Action;
 import com.poscodx.web.utils.WebUtil;
 
-public class ListAction implements Action {
+public class ViewAction implements Action {
 
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		HttpSession session = request.getSession();
 		UserVo authUser = (UserVo) session.getAttribute("authUser");
-		List<BoardVo> list = null;
 
-		Long no = -1L;
-		if (authUser != null) {
-			no = authUser.getNo();
-		}
+		Long no = Long.parseLong(request.getParameter("n"));
+		int curPage = Integer.parseInt(request.getParameter("p"));
+
+		BoardVo boardVo = new BoardDao().findByNo(no);
+		boardVo.setNo(no);
+		new BoardDao().upHit(no);
+
+		System.out.println(boardVo);
 		
-		String keyword = request.getParameter("kwd");
-		if(keyword == null) {
-			list = new BoardDao().findAll();
-		}else {
-			list = new BoardDao().findByKeyword(keyword);
-		}
-		request.setAttribute("list", list);
-		request.setAttribute("user_no", no);
-//		for (BoardVo vo : list) {
-//			System.out.println("[Board List] " + vo);
-//		}
-
-		WebUtil.forward("board/list", request, response);
+		request.setAttribute("vo", boardVo);
+		request.setAttribute("curPage", curPage);
+		WebUtil.forward("board/view", request, response);
 	}
 
 }

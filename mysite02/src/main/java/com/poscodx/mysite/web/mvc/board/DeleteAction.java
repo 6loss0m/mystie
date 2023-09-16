@@ -1,4 +1,4 @@
-package com.poscodx.mysite.web.board;
+package com.poscodx.mysite.web.mvc.board;
 
 import java.io.IOException;
 
@@ -25,11 +25,12 @@ public class DeleteAction implements Action {
 		}
 		/////////////////////////////////////////////////////////////////////
 		
-		Long no = Long.parseLong(request.getParameter("no"));
-//		System.out.println("---"+no+"---");
-		new BoardDao().deleteByNo(no);
+		long no = Long.parseLong(request.getParameter("n"));
+		int curPage = Integer.parseInt(request.getParameter("p"));
 		
-		response.sendRedirect(request.getContextPath() + "/board");
+		new BoardDao().deleteByNo(no);
+
+		response.sendRedirect("board?a=list&p="+curPage);
 
 	}
 

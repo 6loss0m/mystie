@@ -1,10 +1,12 @@
 package com.poscodx.mysite.dao;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,9 +14,8 @@ import com.poscodx.mysite.vo.BoardVo;
 
 public class BoardDao {
 
-	public List<BoardVo> findAll() {
-		List<BoardVo> result = new ArrayList<>();
-
+	public List<BoardVo> findAll(int start, String search) {
+		List<BoardVo> result = new ArrayList<BoardVo>();
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -22,28 +23,29 @@ public class BoardDao {
 		try {
 			conn = getConnection();
 
-			// 3. SQL 준비
-			String sql = "select b.no, b.title, b.contents, b.hit, b.reg_date, b.g_no, b.o_no, b.depth, b.user_no, u.name"
-					+ "	from board b, user u" + "    where b.user_no = u.no" + "    order by b.g_no desc, b.o_no asc;";
+			String sql = "select no, title, contents, hit, reg_date, g_no, o_no, depth, user_no " + "from board "
+					+ "where title like ? " + "order by g_no desc, o_no asc " + "limit ?, 5";
 			pstmt = conn.prepareStatement(sql);
 
-			// 4. binding
+			String s = "%" + search + "%";
 
-			// 5. SQL 실행
+			pstmt.setString(1, s);
+			pstmt.setInt(2, start);
+
 			rs = pstmt.executeQuery();
 
-			// 6. 결과 처리
 			while (rs.next()) {
 				Long no = rs.getLong(1);
 				String title = rs.getString(2);
 				String contents = rs.getString(3);
 				Long hit = rs.getLong(4);
 				String regDate = rs.getString(5);
-				Long gNo = rs.getLong(6);
-				Long oNo = rs.getLong(7);
+				Long groupNo = rs.getLong(6);
+				Long orderNo = rs.getLong(7);
 				Long depth = rs.getLong(8);
 				Long userNo = rs.getLong(9);
-				String name = rs.getString(10);
+
+				String userName = new UserDao().findByNo(userNo).getName();
 
 				BoardVo vo = new BoardVo();
 				vo.setNo(no);
@@ -51,20 +53,19 @@ public class BoardDao {
 				vo.setContents(contents);
 				vo.setHit(hit);
 				vo.setRegDate(regDate);
-				vo.setgNo(gNo);
-				vo.setoNo(oNo);
+				vo.setgNo(groupNo);
+				vo.setoNo(orderNo);
 				vo.setDepth(depth);
 				vo.setUserNo(userNo);
-				vo.setName(name);
+				vo.setName(userName);
 
 				result.add(vo);
 			}
 
 		} catch (SQLException e) {
-			System.out.println("error:" + e);
+			System.out.println("Board Select error: " + e);
 		} finally {
 			try {
-				// 7. 자원정리
 				if (rs != null) {
 					rs.close();
 				}
@@ -78,10 +79,11 @@ public class BoardDao {
 				e.printStackTrace();
 			}
 		}
+
 		return result;
 	}
-	
-	public List<BoardVo> findByKeyword(String keyword) {
+
+	public List<BoardVo> findByKeyword(String keyword, int page) {
 		List<BoardVo> result = new ArrayList<>();
 
 		Connection conn = null;
@@ -93,14 +95,13 @@ public class BoardDao {
 
 			// 3. SQL 준비
 			String sql = "select b.no, b.title, b.contents, b.hit, b.reg_date, b.g_no, b.o_no, b.depth, b.user_no, u.name"
-					+ "	from board b, user u" 
-					+ "    where b.user_no = u.no" 
-					+ "    and b.title like ?" 
-					+ "    order by b.g_no desc, b.o_no asc;";
+					+ "	from board b, user u" + "    where b.user_no = u.no" + "    and b.title like ?"
+					+ "    order by b.g_no desc, b.o_no asc" + " limit ?, 3";
 			pstmt = conn.prepareStatement(sql);
 
 			// 4. binding
 			pstmt.setString(1, "%" + keyword + "%");
+			pstmt.setInt(2, page);
 			// 5. SQL 실행
 			rs = pstmt.executeQuery();
 
@@ -202,9 +203,7 @@ public class BoardDao {
 		return vo;
 	}
 
-	public Long findMaxgNo() {
-		Long max_gno = null;
-
+	public void insert(BoardVo vo) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -212,16 +211,21 @@ public class BoardDao {
 		try {
 			conn = getConnection();
 
-			String sql = "select max(g_no) from board";
+			String sql = "insert into board(user_no, title, contents, reg_date, g_no, o_no, depth, hit) "
+					+ "values(?, ?, ?, now(), ?, ?, ?, 1)";
 			pstmt = conn.prepareStatement(sql);
+
+			pstmt.setLong(1, vo.getUserNo());
+			pstmt.setString(2, vo.getTitle());
+			pstmt.setString(3, vo.getContents());
+			pstmt.setLong(4, vo.getgNo());
+			pstmt.setLong(5, vo.getoNo());
+			pstmt.setLong(6, vo.getDepth());
 
 			rs = pstmt.executeQuery();
 
-			if (rs.next()) {
-				max_gno = rs.getLong(1);
-			}
 		} catch (SQLException e) {
-			System.out.println("error:" + e);
+			System.out.println("Board Insert error: " + e);
 		} finally {
 			try {
 				if (rs != null) {
@@ -238,7 +242,6 @@ public class BoardDao {
 			}
 		}
 
-		return max_gno + 1;
 	}
 
 	public void insertBoard(BoardVo vo) {
@@ -443,5 +446,83 @@ public class BoardDao {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	public int totalBoardCount(String search) {
+		int result = 0;
+
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+
+		try {
+			conn = getConnection();
+
+			String sql = "select count(*) from board";
+			pstmt = conn.prepareStatement(sql);
+
+			rs = pstmt.executeQuery();
+
+			if (rs.next()) {
+				result = rs.getInt(1);
+			}
+		} catch (SQLException e) {
+			System.out.println("error:" + e);
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (pstmt != null) {
+					pstmt.close();
+				}
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return result;
+	}
+
+	public Long findMaxgNo() {
+		Long max_gno = null;
+
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+
+		try {
+			conn = getConnection();
+
+			String sql = "select max(g_no) from board";
+			pstmt = conn.prepareStatement(sql);
+
+			rs = pstmt.executeQuery();
+
+			if (rs.next()) {
+				max_gno = rs.getLong(1);
+			}
+		} catch (SQLException e) {
+			System.out.println("error:" + e);
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (pstmt != null) {
+					pstmt.close();
+				}
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return max_gno + 1;
 	}
 }

@@ -1,4 +1,4 @@
-package com.poscodx.mysite.web.board;
+package com.poscodx.mysite.web.mvc.board;
 
 import java.io.IOException;
 
@@ -7,12 +7,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.poscodx.mysite.dao.BoardDao;
-import com.poscodx.mysite.vo.BoardVo;
+import com.poscodx.mysite.dao.UserDao;
 import com.poscodx.mysite.vo.UserVo;
 import com.poscodx.web.mvc.Action;
+import com.poscodx.web.utils.WebUtil;
 
-public class ModifyAction implements Action {
+public class WriteFormAction implements Action {
 
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
@@ -26,20 +26,18 @@ public class ModifyAction implements Action {
 		}
 		/////////////////////////////////////////////////////////////////////
 		
-		String title = request.getParameter("title");
-		String contents = request.getParameter("content");
-		Long no = Long.parseLong(request.getParameter("no"));
-
-		System.out.println("title : " + title + ", contents : " + contents + ", no : " + no);
-
-		BoardVo vo = new BoardVo();
-		vo.setTitle(title);
-		vo.setContents(contents);
-		vo.setNo(no);
-
-		new BoardDao().updateBoard(vo);
-
-		response.sendRedirect(request.getContextPath() + "/board?a=view&no=" + no);
+		if(request.getParameter("n") == null) {
+			WebUtil.forward("board/write", request, response);
+		}
+		else {
+			Long no = Long.parseLong(request.getParameter("n"));
+			int curPage = Integer.parseInt(request.getParameter("p"));
+			System.out.println(no+" : "+curPage);
+			
+			request
+				.getRequestDispatcher("/WEB-INF/views/board/write.jsp?n=" + no + "&p=" + curPage)
+				.forward(request, response);
+		}
 	}
 
 }

@@ -1,4 +1,4 @@
-package com.poscodx.mysite.web.board;
+package com.poscodx.mysite.web.mvc.board;
 
 import com.poscodx.web.mvc.Action;
 import com.poscodx.web.mvc.ActionFactory;
