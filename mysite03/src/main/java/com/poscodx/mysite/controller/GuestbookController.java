@@ -14,12 +14,13 @@ import com.poscodx.mysite.service.GuestbookService;
 import com.poscodx.mysite.vo.GuestbookVo;
 
 @Controller
+@RequestMapping("/guestbook")
 public class GuestbookController {
 	
 	@Autowired
 	private GuestbookService guestbookService;
 	
-	@RequestMapping("/")
+	@RequestMapping("")
 	public String main(Model model) {
 		List<GuestbookVo> list = guestbookService.getContentsList();
 		model.addAttribute("list", list);
@@ -31,18 +32,17 @@ public class GuestbookController {
 		model.addAttribute("no", no);
 		return "guestbook/delete";
 	}
-	
+
 	@RequestMapping(value="/delete/{no}", method=RequestMethod.POST)
-	public String delete(@PathVariable("no") Long no,@RequestParam(value="password", defaultValue = "", required = true) String password, Model model) {
+	public String delete(@PathVariable("no") Long no, @RequestParam(value="password", required=true, defaultValue="") String password) {
 		guestbookService.deleteContents(no, password);
-		return "redirect:/";
+		return "redirect:/guestbook";
 	}
 	
-	@RequestMapping(value="/add/{no}", method=RequestMethod.POST)
+	@RequestMapping(value="/insert", method=RequestMethod.POST)
 	public String add(GuestbookVo vo) {
-		
 		guestbookService.addContents(vo);
-		return "redirect:/";
+		return "redirect:/guestbook";
 	}
 	
 }

@@ -26,7 +26,7 @@
 							<td><input type="password" name="pass"></td>
 						</tr>
 						<tr>
-							<td colspan=4><textarea name="content" id="content"></textarea></td>
+							<td colspan=4><textarea name="contents" id="content"></textarea></td>
 						</tr>
 						<tr>
 							<td colspan=4 align=right><input type="submit" VALUE=" 확인 "></td>
@@ -41,7 +41,7 @@
 								<td>[${count - status.index }]</td>
 								<td>${vo.name }</td>
 								<td>${vo.regDate }</td>
-								<td><a href="${pageContext.request.contextPath }/guestbook/delete&no=${vo.no }">삭제</a></td>
+								<td><a href="${pageContext.request.contextPath }/guestbook/delete/${vo.no }">삭제</a></td>
 							</tr>
 							<tr>
 								<td colspan=4>
