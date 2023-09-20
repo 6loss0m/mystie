@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="board">
+	<select id="findAll" parameterType="map" resultType="boardvo">
+		<![CDATA[
+		select no, title, contents, hit, reg_date, g_no, o_no, depth, user_no 
+		from board
+		where title like #{search }
+		order by g_no desc, o_no asc 
+		limit #{start}, 5
+		]]>
+	</select>
+</mapper>

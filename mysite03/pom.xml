@@ -84,7 +84,15 @@
          <artifactId>mybatis</artifactId>
          <version>3.5.9</version>
       </dependency>
+      
+      <!-- spring aspect -->
+		<dependency>
+		   <groupId>org.springframework</groupId>
+		   <artifactId>spring-aspects</artifactId>
+		   <version>${org.springframework-version}</version>
+		</dependency>
 
+	<!-- mybatis -->
       <dependency>
          <groupId>org.mybatis</groupId>
          <artifactId>mybatis-spring</artifactId>
