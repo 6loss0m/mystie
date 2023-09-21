@@ -8,5 +8,8 @@
 		<li><a href="${pageContext.request.contextPath }">장은영</a></li>
 		<li><a href="${pageContext.request.contextPath }/guestbook">방명록</a></li>
 		<li><a href="${pageContext.request.contextPath }/board">게시판</a></li>
+		<c:if test ="${authUser.role eq 'ADMIN'}">
+			<li><a href="${pageContext.request.contextPath }/admin">관리자 페이지</a></li>
+		</c:if>
 	</ul>
 </div>
