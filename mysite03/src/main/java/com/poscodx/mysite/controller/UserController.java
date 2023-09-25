@@ -1,11 +1,16 @@
 package com.poscodx.mysite.controller;
 
+import java.util.List;
+
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,12 +27,24 @@ public class UserController {
 	private UserService userService;
 
 	@RequestMapping(value = "/join", method = RequestMethod.GET)
-	public String join() {
+	public String join(@ModelAttribute UserVo userVo) {
 		return "user/join";
 	}
 
 	@RequestMapping(value = "/join", method = RequestMethod.POST)
-	public String join(UserVo userVo) {
+	// @ModelAttribute 어노테이션을 추가하면, 자동으로 jsp에 추가해줌 
+	// = model.addAttribute("userVo", userVo);
+	public String join(@ModelAttribute @Valid UserVo userVo, BindingResult result, Model model) {
+		if (result.hasErrors()) {
+			List<ObjectError> list = result.getAllErrors();
+			for(ObjectError error : list) {
+				System.out.println(error);
+			}
+			model.addAllAttributes(result.getModel()); // Map으로 산출
+			return "user/join";
+			
+		}
+		
 		userService.addUser(userVo);
 		return "redirect:/user/joinsuccess";
 	}
@@ -63,21 +80,21 @@ public class UserController {
 		session.invalidate();
 		return "redirect:/";
 	}
-	
+
 	@Auth
-	@RequestMapping(value="/update", method=RequestMethod.GET)
-	public String update(@AuthUser UserVo authUser, Model model) {		
+	@RequestMapping(value = "/update", method = RequestMethod.GET)
+	public String update(@AuthUser UserVo authUser, Model model) {
 		UserVo userVo = userService.getUser(authUser.getNo());
 		model.addAttribute("userVo", userVo);
 		return "user/update";
 	}
-	
+
 	@Auth
-	@RequestMapping(value="/update", method=RequestMethod.POST)
+	@RequestMapping(value = "/update", method = RequestMethod.POST)
 	public String update(@AuthUser UserVo authUser, UserVo userVo) {
 		userVo.setNo(authUser.getNo());
 		userService.updateUser(userVo);
-		
+
 		authUser.setName(userVo.getName());
 		return "redirect:/user/update";
 	}

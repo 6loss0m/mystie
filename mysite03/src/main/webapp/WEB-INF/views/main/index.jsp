@@ -24,7 +24,8 @@
 							<c:otherwise>
 								<img id="profile" src="${pageContext.request.contextPath }/${siteVo.profile }" style="width: 200px">
 							</c:otherwise>
-						</c:choose>					<h2>
+						</c:choose>	
+					<h2>
 						${siteVo.welcome}
 					</h2>
 					<p>

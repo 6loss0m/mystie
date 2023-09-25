@@ -1,5 +1,7 @@
 package com.poscodx.mysite.controller;
 
+import javax.servlet.ServletContext;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,6 +22,10 @@ import com.poscodx.mysite.vo.UserVo;
 @RequestMapping("/admin")
 // 모든 controller가 인증을 받고 들어올 수 있도록
 public class AdminController {
+	
+	@Autowired
+	private ServletContext servletContext; // Controller 생길 때 만들어서 같이 넣어줌.
+	
 	@Autowired
 	private SiteService siteService;
 	
@@ -75,6 +81,8 @@ public class AdminController {
 			vo.setProfile(url);
 		}
 		siteService.updateSite(vo);
+		servletContext.setAttribute("siteVo", vo);
+		
 		return "redirect:/admin/";
 	}
 	

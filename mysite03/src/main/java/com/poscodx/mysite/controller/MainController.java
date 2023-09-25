@@ -10,13 +10,11 @@ import com.poscodx.mysite.vo.SiteVo;
 
 @Controller
 public class MainController {
-	@Autowired
-	private SiteService siteService;
 	
 	@RequestMapping("/")
-	public String index(Model model) {
-		SiteVo siteVo = siteService.getSite(1L);
-		model.addAttribute("siteVo", siteVo);
+	public String index() {
+//		SiteVo siteVo = siteService.getSite(1L);
+//		model.addAttribute("siteVo", siteVo);
 		return "main/index";
 	}
 
