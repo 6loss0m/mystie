@@ -6,6 +6,7 @@
    		<typeAlias type="com.poscodx.mysite.vo.UserVo" alias="uservo"/>
    		<typeAlias type="com.poscodx.mysite.vo.BoardVo" alias="boardvo"/>
    		<typeAlias type="com.poscodx.mysite.vo.SiteVo" alias="sitevo"/>
+   		<typeAlias type="com.poscodx.mysite.vo.GalleryVo" alias="galleryvo"/>
    </typeAliases>   
    <mappers>
       <mapper resource="mybatis/mappers/guestbook.xml" />

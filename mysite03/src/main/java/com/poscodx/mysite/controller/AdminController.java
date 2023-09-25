@@ -2,7 +2,9 @@ package com.poscodx.mysite.controller;
 
 import javax.servlet.ServletContext;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +24,12 @@ import com.poscodx.mysite.vo.UserVo;
 @RequestMapping("/admin")
 // 모든 controller가 인증을 받고 들어올 수 있도록
 public class AdminController {
+
+	/*
+	@Autowired
+	private SiteVo site;
+	autowired에서 scanning 하고 있을 때는 없다가, 나중에 siteVo에서 주입할 때 에러가 발생
+	*/
 	
 	@Autowired
 	private ServletContext servletContext; // Controller 생길 때 만들어서 같이 넣어줌.
@@ -31,6 +39,9 @@ public class AdminController {
 	
 	@Autowired
 	private FileUploadService fileUploadService;
+	
+	@Autowired
+	private ApplicationContext applicationContext;
 	
 	@RequestMapping("")
 	public String main(Model model) {
@@ -80,8 +91,17 @@ public class AdminController {
 			String url = fileUploadService.restore(file);
 			vo.setProfile(url);
 		}
+		SiteVo site = applicationContext.getBean(SiteVo.class);
+		
 		siteService.updateSite(vo);
 		servletContext.setAttribute("siteVo", vo);
+		
+//		site.setTitle(vo.getTitle());
+//		site.setWelcome(vo.getWelcome());
+//		site.setProfile(vo.getProfile());
+//		site.setDescription(vo.getDescription());
+		BeanUtils.copyProperties(vo, site);
+		
 		
 		return "redirect:/admin/";
 	}
