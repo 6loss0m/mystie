@@ -27,6 +27,8 @@
 		    <artifactId>mariadb-java-client</artifactId>
 		    <version>3.0.8</version>
 		</dependency>	
+		
+		<!-- servlet -->
 		<dependency>
 		    <groupId>javax.servlet</groupId>
 		    <artifactId>javax.servlet-api</artifactId>
@@ -38,6 +40,7 @@
 		    <artifactId>jsp-api</artifactId>
 		    <version>2.2</version>
 		</dependency>
+		
 	</dependencies>
 	
 	<build>
