@@ -29,7 +29,12 @@ public class MvcConfig implements WebMvcConfigurer {
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
 		registry
 			.addResourceHandler("/assets/**")
-			.addResourceLocations("classpath:assets/");		
+			.addResourceLocations("classpath:assets/");
+		
+//		yml은 하나밖에 안해줘서, 따로 추가 해주면 됨.
+//		registry
+//			.addResourceHandler("/assets/upload-images")
+//			.addResourceLocations("classpath:/mysite-upload/");
 	}
 	
 //	@Override
